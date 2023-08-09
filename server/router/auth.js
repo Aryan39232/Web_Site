@@ -66,8 +66,6 @@ router.post('/signin' , async (req , res) => {
     try{
         const userlogin = await User.findOne({email:email});
 
-        
-
     }catch(error){  console.log("Invail credentials")  }
     
 
