@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const bcrypt = require('bcryptjs')
 require('../DB/connection')
 
 const User = require('../model/userSchema')
@@ -42,7 +42,15 @@ router.post('/signin' , async (req , res) => {
 
     try{
         const userlogin = await User.findOne({email:email});
+        const isMatch = await bcrypt.compare(password , userlogin.password)
 
+        if(!isMatch || !userlogin){
+            res.status(400).json({error : "Invail credentials"});
+        }
+        else{
+            res.status(200).json({error : "user Signin Successfully"});
+        }
+        
     }catch(error){  console.log("Invail credentials")  }
 
 })
