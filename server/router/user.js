@@ -9,6 +9,7 @@ router.get('/' , (req , res) =>{
     res.send(`hello world from the server the server rotuer js`);
 });
 
+
 router.post('/register' , async (req , res) =>{
     const { name , email , phone ,work , password , cpassword } = req.body;
 
