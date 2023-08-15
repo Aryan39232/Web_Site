@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 require('../DB/connection')
 
 const User = require('../model/userSchema')
@@ -44,8 +45,22 @@ router.post('/signin' , async (req , res) => {
         const userlogin = await User.findOne({email:email});
         const isMatch = await bcrypt.compare(password , userlogin.password)
 
-        if(!isMatch || !userlogin){
-            res.status(400).json({error : "Invail credentials"});
+        if(userlogin){
+            const isMatch = await bcrypt.compare(password , userlogin.password);
+
+            token = await userlogin.generateAuthToken();
+            
+            res.cookie("jwtoken" , token) , {
+                expires : new Date(Date.now() + 2589000000),
+                httpOnly: true
+            };
+
+            if(!isMatch){
+                res.status(400).json({error : "Invail credentials"});
+            }
+            else{
+                res.status(200).json({error : "user Signin Successfully"});    
+            }
         }
         else{
             res.status(200).json({error : "user Signin Successfully"});
